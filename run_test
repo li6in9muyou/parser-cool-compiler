@@ -31,7 +31,7 @@ if [[ "$?" -ne 0 ]]; then
 fi
 
 for cl in "$@"; do
-  input_cl=../../examples/$cl
+  input_cl=$cl
   echo
   echo "INPUT: ${input_cl}"
   echo "Comparing lexer output" | blue
