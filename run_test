@@ -32,7 +32,8 @@ fi
 
 for cl in "$@"; do
   input_cl=../../examples/$cl
-  echo "INPUT: ${input_cl}" | blue
+  echo
+  echo "INPUT: ${input_cl}"
   echo "Comparing lexer output" | blue
   diff -u --color \
     --label mylexer <(mylexer $input_cl) \

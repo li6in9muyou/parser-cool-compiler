@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+./run_test $(ls $ex --sort size -r | grep cl$ | head -n $1)
