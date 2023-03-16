@@ -160,6 +160,7 @@
     %type <expression> dispatch
     %type <expressions> comma_sep_expr
     %type <expressions> semi_sep_expr
+    %type <formals> formals
         
     /* Precedence declarations go here. */
     
@@ -204,11 +205,11 @@
     
     /* Feature list may be empty, but no empty features in list. */
     feature_list
-    : feature_list feature
+    : feature_list feature ';'
       { 
         $$ = append_Features($1, single_Features($2)); 
       }
-    | feature
+    | feature ';'
       {  
         $$ = single_Features($1);
       }
@@ -219,10 +220,25 @@
     | attr
     ;
 
-    method
-    : OBJECTID '(' ')' ':' TYPEID '{' expr '}' ';'
+    formals
+    : OBJECTID ':' TYPEID
       {
-        $$ = method($1, nil_Formals(), $5, $7);
+        $$ = single_Formals(formal($1, $3));
+      }
+    | formals ',' OBJECTID ':' TYPEID
+      {
+        $$ = append_Formals($1, single_Formals(formal($3, $5)));
+      }
+    | /* empty */
+      {
+        $$ = nil_Formals();
+      }
+    ;
+
+    method
+    : OBJECTID '(' formals ')' ':' TYPEID '{' expr '}'
+      {
+        $$ = method($1, $3, $6, $8);
       }
     ;
     
@@ -230,6 +246,10 @@
     : OBJECTID ':' TYPEID
       {
         $$ = attr($1, $3, no_expr());
+      }
+    | OBJECTID ':' TYPEID ASSIGN expr
+      {
+        $$ = attr($1, $3, $5);
       }
     ;
 
