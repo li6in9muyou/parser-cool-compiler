@@ -337,14 +337,6 @@
       {
         $$ = let($2, $4, $6, $8);
       }
-    | LET OBJECTID ':' TYPEID ',' let_list 
-      {
-        $$ = let($2, $4, no_expr(), $6);
-      }
-    | LET OBJECTID ':' TYPEID ASSIGN expr ',' let_list 
-      {
-        $$ = let($2, $4, $6, $8);
-      }
     ;
 
     let_tail
@@ -359,22 +351,24 @@
     ;
 
     let_list
-    : let_list OBJECTID ':' TYPEID ',' let_tail
-      {
-        $$ = let($2, $4, no_expr(), $1);
-      }
-    | let_list OBJECTID ':' TYPEID ASSIGN expr ',' let_tail
-      {
-        $$ = let($2, $4, $6, $1);
-      }
-    | OBJECTID ':' TYPEID ',' let_tail
+    : OBJECTID ':' TYPEID ',' let_list
       {
         $$ = let($1, $3, no_expr(), $5);
       }
-    | OBJECTID ':' TYPEID ASSIGN expr ',' let_tail
+    | OBJECTID ':' TYPEID ASSIGN expr ',' let_list
       {
         $$ = let($1, $3, $5, $7);
       }
+    | OBJECTID ':' TYPEID ',' 
+      {
+        $$ = let($1, $3, no_expr(), no_expr());
+      }
+    | OBJECTID ':' TYPEID ASSIGN expr ',' 
+      {
+        $$ = let($1, $3, $5, no_expr());
+      }
+    | let_list let_tail
+    | let_tail
     ;
 
     logics
