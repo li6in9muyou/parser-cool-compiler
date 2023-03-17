@@ -160,6 +160,10 @@
     %type <expression> arithmetic
     %type <expression> dispatch
     %type <expression> logics
+    %type <expression> let_expr
+    %type <expression> let_head
+    %type <expression> let_list
+    %type <expression> let_tail
     %type <expressions> comma_sep_expr
     %type <expressions> semi_sep_expr
     %type <formals> formals
@@ -314,6 +318,68 @@
         $$ = loop($2, $4);
       }
     | logics
+    | let_expr
+    ;
+
+    let_expr 
+    : let_head ',' let_tail
+      {
+        $$ = $3;
+      }
+    | let_head ',' let_list let_tail
+      {
+        $$ = $4;
+      }
+    | LET OBJECTID ':' TYPEID IN expr
+      {
+        $$ = let($2, $4, no_expr(), $6);
+      }
+    | LET OBJECTID ':' TYPEID ASSIGN expr IN expr
+      {
+        $$ = let($2, $4, $6, $8);
+      }
+    ;
+
+
+    let_head
+    : LET OBJECTID ':' TYPEID
+      {
+        $$ = let($2, $4, no_expr(), no_expr());
+      }
+    | LET OBJECTID ':' TYPEID ASSIGN expr
+      {
+        $$ = let($2, $4, $6, no_expr());
+      }
+    ;
+
+    let_tail
+    : OBJECTID ':' TYPEID IN expr
+      {
+        $$ = let($1, $3, no_expr(), $5);
+      }
+    | OBJECTID ':' TYPEID ASSIGN expr IN expr
+      {
+        $$ = let($1, $3, $5, $7);
+      }
+    ;
+
+    let_list
+    : let_list OBJECTID ':' TYPEID ','
+      {
+        $$ = let($2, $4, no_expr(), no_expr());
+      }
+    | let_list OBJECTID ':' TYPEID ASSIGN expr ','
+      {
+        $$ = let($2, $4, $6, no_expr());
+      }
+    | OBJECTID ':' TYPEID ','
+      {
+        $$ = let($1, $3, no_expr(), no_expr());
+      }
+    | OBJECTID ':' TYPEID ASSIGN expr ','
+      {
+        $$ = let($1, $3, $5, no_expr());
+      }
     ;
 
     logics
