@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 
 green() {
-    tput setaf 2;
-    cat;
-    tput sgr0;
+  tput setaf 2
+  cat
+  tput sgr0
 }
 
 blue() {
-    tput setaf 4;
-    cat;
-    tput sgr0;
+  tput setaf 4
+  cat
+  tput sgr0
 }
 
 red() {
-    tput setaf 1;
-    cat;
-    tput sgr0;
+  tput setaf 1
+  cat
+  tput sgr0
 }
 
 make parser
