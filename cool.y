@@ -159,6 +159,7 @@
     %type <expression> expr
     %type <expression> arithmetic
     %type <expression> dispatch
+    %type <expression> logics
     %type <expressions> comma_sep_expr
     %type <expressions> semi_sep_expr
     %type <formals> formals
@@ -267,6 +268,18 @@
       {
         $$ = object($1);
       }
+    | OBJECTID ASSIGN expr
+      {
+        $$ = assign($1, $3);
+      }
+    | BOOL_CONST
+      {
+        $$ = bool_const($1);
+      }
+    | INT_CONST
+      {
+        $$ = int_const($1);
+      }
     | STR_CONST
       {
         $$ = string_const($1);
@@ -280,10 +293,6 @@
       {
         $$ = new_($2);
       }
-    | INT_CONST
-      {
-        $$ = int_const($1);
-      }
     | '{' semi_sep_expr '}'
       {
         $$ = block($2);
@@ -293,6 +302,34 @@
         $$ = isvoid($2);
       }
     | arithmetic
+    | IF expr THEN expr ELSE expr FI
+      {
+        $$ = cond($2, $4, $6);
+      }
+    | WHILE expr LOOP expr POOL
+      {
+        $$ = loop($2, $4);
+      }
+    | logics
+    ;
+
+    logics
+    : expr '<' expr
+      {
+        $$ = lt($1, $3);
+      }
+    | expr LE expr
+      {
+        $$ = leq($1, $3);
+      }
+    | expr '=' expr
+      {
+        $$ = eq($1, $3);
+      }
+    | NOT expr
+      {
+        $$ = comp($2);
+      }
     ;
 
     arithmetic
