@@ -161,7 +161,6 @@
     %type <expression> dispatch
     %type <expression> logics
     %type <expression> let_expr
-    %type <expression> let_head
     %type <expression> let_list
     %type <expression> let_tail
     %type <expressions> comma_sep_expr
@@ -322,15 +321,7 @@
     ;
 
     let_expr 
-    : let_head ',' let_tail
-      {
-        $$ = $3;
-      }
-    | let_head ',' let_list let_tail
-      {
-        $$ = $4;
-      }
-    | LET OBJECTID ':' TYPEID IN expr
+    : LET OBJECTID ':' TYPEID IN expr
       {
         $$ = let($2, $4, no_expr(), $6);
       }
@@ -338,17 +329,21 @@
       {
         $$ = let($2, $4, $6, $8);
       }
-    ;
-
-
-    let_head
-    : LET OBJECTID ':' TYPEID
+    | LET OBJECTID ':' TYPEID ',' let_list
       {
-        $$ = let($2, $4, no_expr(), no_expr());
+        $$ = let($2, $4, no_expr(), $6);
       }
-    | LET OBJECTID ':' TYPEID ASSIGN expr
+    | LET OBJECTID ':' TYPEID ASSIGN expr ',' let_list
       {
-        $$ = let($2, $4, $6, no_expr());
+        $$ = let($2, $4, $6, $8);
+      }
+    | LET OBJECTID ':' TYPEID ',' let_list 
+      {
+        $$ = let($2, $4, no_expr(), $6);
+      }
+    | LET OBJECTID ':' TYPEID ASSIGN expr ',' let_list 
+      {
+        $$ = let($2, $4, $6, $8);
       }
     ;
 
@@ -364,21 +359,21 @@
     ;
 
     let_list
-    : let_list OBJECTID ':' TYPEID ','
+    : let_list OBJECTID ':' TYPEID ',' let_tail
       {
-        $$ = let($2, $4, no_expr(), no_expr());
+        $$ = let($2, $4, no_expr(), $1);
       }
-    | let_list OBJECTID ':' TYPEID ASSIGN expr ','
+    | let_list OBJECTID ':' TYPEID ASSIGN expr ',' let_tail
       {
-        $$ = let($2, $4, $6, no_expr());
+        $$ = let($2, $4, $6, $1);
       }
-    | OBJECTID ':' TYPEID ','
+    | OBJECTID ':' TYPEID ',' let_tail
       {
-        $$ = let($1, $3, no_expr(), no_expr());
+        $$ = let($1, $3, no_expr(), $5);
       }
-    | OBJECTID ':' TYPEID ASSIGN expr ','
+    | OBJECTID ':' TYPEID ASSIGN expr ',' let_tail
       {
-        $$ = let($1, $3, $5, no_expr());
+        $$ = let($1, $3, $5, $7);
       }
     ;
 
