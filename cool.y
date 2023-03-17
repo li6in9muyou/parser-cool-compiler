@@ -157,12 +157,21 @@
     %type <feature> method
     %type <feature> attr
     %type <expression> expr
+    %type <expression> arithmetic
     %type <expression> dispatch
     %type <expressions> comma_sep_expr
     %type <expressions> semi_sep_expr
     %type <formals> formals
         
     /* Precedence declarations go here. */
+    %right ASSIGN    
+    %left NOT
+    %left '+' '-'
+    %left '*' '/'
+    %left ISVOID
+    %left '~'
+    %left '@'
+    %left '.'
     
     
     %%
@@ -282,6 +291,30 @@
     | ISVOID expr
       {
         $$ = isvoid($2);
+      }
+    | arithmetic
+    ;
+
+    arithmetic
+    : expr '+' expr
+      {
+        $$ = plus($1, $3);
+      }
+    | expr '-' expr
+      {
+        $$ = sub($1, $3);
+      }
+    | expr '*' expr
+      {
+        $$ = mul($1, $3);
+      }
+    | expr '/' expr
+      {
+        $$ = divide($1, $3);
+      }
+    | '~' expr
+      {
+        $$ = neg($2);
       }
     ;
 
