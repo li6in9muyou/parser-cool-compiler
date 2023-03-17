@@ -40,12 +40,18 @@ for cl in "$@"; do
   fi
 
   echo "Comparing parser output" | blue
-  diff -u --color \
-    --label myparser <(mylexer $input_cl | myparser $input_cl) \
-    --label parser <(lexer $input_cl | parser $input_cl)
-  if [[ "$?" -eq 0 ]]; then
-    echo PASS | green
-  else
+  myoutput=$(mylexer $input_cl | myparser $input_cl 2>&1)
+  if [[ $? -ne 0 ]]; then
     echo FAILED | red
+    echo "$myoutput" | red
+  else
+    diff -u --color \
+      --label myparser <(echo "$myoutput") \
+      --label parser <(lexer $input_cl | parser $input_cl)
+    if [[ "$?" -eq 0 ]]; then
+      echo PASS | green
+    else
+      echo FAILED | red
+    fi
   fi
 done
