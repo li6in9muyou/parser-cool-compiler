@@ -45,7 +45,7 @@ for cl in "$@"; do
     echo FAILED | red
     echo "$myoutput" | red
   else
-    diff -u --color \
+    diff -U 6 --color \
       --label myparser <(echo "$myoutput") \
       --label parser <(lexer $input_cl | parser $input_cl)
     if [[ "$?" -eq 0 ]]; then
