@@ -255,7 +255,10 @@
     attr
     : OBJECTID ':' TYPEID
       {
-        $$ = attr($1, $3, no_expr());
+        SET_NODELOC(0);
+        Expression nil = no_expr();
+        SET_NODELOC(@$);
+        $$ = attr($1, $3, nil);
       }
     | OBJECTID ':' TYPEID ASSIGN expr
       {
