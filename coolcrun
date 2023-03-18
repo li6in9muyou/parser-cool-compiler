@@ -6,4 +6,6 @@ green() {
     tput sgr0;
 }
 
-spim -file <(coolc $1 -o /dev/stdout) | sed '1,5d' | green
+spim -file <(coolc $1 -o /dev/stdout) \
+    | sed -e '1,5d' -e '/Increasing heap.../d' \
+    | green
