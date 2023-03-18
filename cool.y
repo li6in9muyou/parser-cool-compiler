@@ -323,7 +323,10 @@
     let_expr 
     : LET OBJECTID ':' TYPEID IN expr
       {
-        $$ = let($2, $4, no_expr(), $6);
+        SET_NODELOC(0);
+        Expression nil = no_expr();
+        SET_NODELOC(@$);
+        $$ = let($2, $4, nil, $6);
       }
     | LET OBJECTID ':' TYPEID ASSIGN expr IN expr
       {
@@ -331,7 +334,10 @@
       }
     | LET OBJECTID ':' TYPEID ',' let_list
       {
-        $$ = let($2, $4, no_expr(), $6);
+        SET_NODELOC(0);
+        Expression nil = no_expr();
+        SET_NODELOC(@$);
+        $$ = let($2, $4, nil, $6);
       }
     | LET OBJECTID ':' TYPEID ASSIGN expr ',' let_list
       {
@@ -342,7 +348,10 @@
     let_tail
     : OBJECTID ':' TYPEID IN expr
       {
-        $$ = let($1, $3, no_expr(), $5);
+        SET_NODELOC(0);
+        Expression nil = no_expr();
+        SET_NODELOC(@$);
+        $$ = let($1, $3, nil, $5);
       }
     | OBJECTID ':' TYPEID ASSIGN expr IN expr
       {
@@ -353,7 +362,10 @@
     let_list
     : OBJECTID ':' TYPEID ',' let_list
       {
-        $$ = let($1, $3, no_expr(), $5);
+        SET_NODELOC(0);
+        Expression nil = no_expr();
+        SET_NODELOC(@$);
+        $$ = let($1, $3, nil, $5);
       }
     | OBJECTID ':' TYPEID ASSIGN expr ',' let_list
       {
@@ -361,7 +373,10 @@
       }
     | OBJECTID ':' TYPEID ',' 
       {
-        $$ = let($1, $3, no_expr(), no_expr());
+        SET_NODELOC(0);
+        Expression nil = no_expr();
+        SET_NODELOC(@$);
+        $$ = let($1, $3, nil, no_expr());
       }
     | OBJECTID ':' TYPEID ASSIGN expr ',' 
       {
