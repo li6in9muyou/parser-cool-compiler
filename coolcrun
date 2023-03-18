@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+green() {
+    tput setaf 2;
+    cat;
+    tput sgr0;
+}
+
+spim -file <(coolc $1 -o /dev/stdout) | sed '1,5d' | green
