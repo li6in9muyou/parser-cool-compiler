@@ -6,6 +6,19 @@ green() {
     tput sgr0;
 }
 
-spim -file <(coolc $1 -o /dev/stdout) \
+red() {
+  tput setaf 1
+  cat
+  tput sgr0
+}
+
+assembly=$(coolc $1 -o /dev/stdout)
+
+if [[ $? -ne 0 ]]; then 
+    echo COMPILE FAILED | red 
+    exit 1
+fi
+
+spim -file <(echo "$assembly") \
     | sed -e '1,5d' -e '/Increasing heap.../d' \
     | green
