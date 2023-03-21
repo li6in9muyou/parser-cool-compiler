@@ -162,7 +162,6 @@
     %type <expression> logics
     %type <expression> let_expr
     %type <expression> let_list
-    %type <expression> let_tail
     %type <expressions> comma_sep_expr
     %type <expressions> semi_sep_expr
     %type <formals> formals
@@ -321,31 +320,13 @@
     ;
 
     let_expr 
-    : LET OBJECTID ':' TYPEID IN expr
+    : LET let_list
       {
-        SET_NODELOC(0);
-        Expression nil = no_expr();
-        SET_NODELOC(@$);
-        $$ = let($2, $4, nil, $6);
-      }
-    | LET OBJECTID ':' TYPEID ASSIGN expr IN expr
-      {
-        $$ = let($2, $4, $6, $8);
-      }
-    | LET OBJECTID ':' TYPEID ',' let_list
-      {
-        SET_NODELOC(0);
-        Expression nil = no_expr();
-        SET_NODELOC(@$);
-        $$ = let($2, $4, nil, $6);
-      }
-    | LET OBJECTID ':' TYPEID ASSIGN expr ',' let_list
-      {
-        $$ = let($2, $4, $6, $8);
+        $$ = $2;
       }
     ;
 
-    let_tail
+    let_list
     : OBJECTID ':' TYPEID IN expr
       {
         SET_NODELOC(0);
@@ -357,10 +338,7 @@
       {
         $$ = let($1, $3, $5, $7);
       }
-    ;
-
-    let_list
-    : OBJECTID ':' TYPEID ',' let_list
+    | OBJECTID ':' TYPEID ',' let_list
       {
         SET_NODELOC(0);
         Expression nil = no_expr();
@@ -371,19 +349,6 @@
       {
         $$ = let($1, $3, $5, $7);
       }
-    | OBJECTID ':' TYPEID ',' 
-      {
-        SET_NODELOC(0);
-        Expression nil = no_expr();
-        SET_NODELOC(@$);
-        $$ = let($1, $3, nil, no_expr());
-      }
-    | OBJECTID ':' TYPEID ASSIGN expr ',' 
-      {
-        $$ = let($1, $3, $5, no_expr());
-      }
-    | let_list let_tail
-    | let_tail
     ;
 
     logics
