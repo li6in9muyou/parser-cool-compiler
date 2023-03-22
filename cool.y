@@ -161,6 +161,8 @@
     %type <expression> dispatch
     %type <expression> logics
     %type <expression> let_expr
+    %type <expression> case_expr
+    %type <cases> branches
     %type <expression> let_list
     %type <expressions> comma_sep_expr
     %type <expressions> semi_sep_expr
@@ -317,6 +319,27 @@
       }
     | logics
     | let_expr
+    | case_expr
+    ;
+
+    case_expr
+    : CASE expr OF branches ESAC
+      {
+        $$ = typcase($2, $4); 
+      }
+    ;
+
+    branches
+    : branches OBJECTID ':' TYPEID DARROW expr ';'
+      {
+        SET_NODELOC(@2);
+        $$ = append_Cases($1, single_Cases(branch($2, $4, $6)));
+      }
+    | OBJECTID ':' TYPEID DARROW expr ';'
+      {
+        SET_NODELOC(@1);
+        $$ = single_Cases(branch($1, $3, $5));
+      }
     ;
 
     let_expr 
