@@ -238,10 +238,12 @@
     formals
     : OBJECTID ':' TYPEID
       {
+        SET_NODELOC(@1);
         $$ = single_Formals(formal($1, $3));
       }
     | formals ',' OBJECTID ':' TYPEID
       {
+        SET_NODELOC(@3);
         $$ = append_Formals($1, single_Formals(formal($3, $5)));
       }
     | /* empty */
@@ -389,14 +391,17 @@
     logics
     : expr '<' expr
       {
+        SET_NODELOC(@2);
         $$ = lt($1, $3);
       }
     | expr LE expr
       {
+        SET_NODELOC(@2);
         $$ = leq($1, $3);
       }
     | expr '=' expr
       {
+        SET_NODELOC(@2);
         $$ = eq($1, $3);
       }
     | NOT expr
@@ -408,18 +413,22 @@
     arithmetic
     : expr '+' expr
       {
+        SET_NODELOC(@2);
         $$ = plus($1, $3);
       }
     | expr '-' expr
       {
+        SET_NODELOC(@2);
         $$ = sub($1, $3);
       }
     | expr '*' expr
       {
+        SET_NODELOC(@2);
         $$ = mul($1, $3);
       }
     | expr '/' expr
       {
+        SET_NODELOC(@2);
         $$ = divide($1, $3);
       }
     | '~' expr
