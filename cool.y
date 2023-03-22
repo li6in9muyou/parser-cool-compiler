@@ -464,7 +464,7 @@
       }
     | expr '@' TYPEID '.' OBJECTID '(' comma_sep_expr ')'
       {
-        ;
+        $$ = static_dispatch($1, $3, $5, $7);
       }
     | expr '.' OBJECTID '(' comma_sep_expr ')'
       {
