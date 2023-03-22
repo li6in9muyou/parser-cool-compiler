@@ -327,7 +327,18 @@
     ;
 
     let_list
-    : OBJECTID ':' TYPEID IN expr
+    : OBJECTID ':' TYPEID
+      {
+        SET_NODELOC(0);
+        Expression nil = no_expr();
+        SET_NODELOC(@$);
+        $$ = let($1, $3, nil, no_expr());
+      }
+    | OBJECTID ':' TYPEID ASSIGN expr
+      {
+        $$ = let($1, $3, $5, no_expr());
+      }
+    | OBJECTID ':' TYPEID IN expr
       {
         SET_NODELOC(0);
         Expression nil = no_expr();
