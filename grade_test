@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-file_cnt=$(ls $EXAMPLE_DIR/parser --sort size -r | grep cl$ | wc -l)
+file_dir=$EXAMPLE_DIR/parser
+file_cnt=$(ls $file_dir --sort size -r | grep cl$ | wc -l)
 echo FOUND "$file_cnt" FILES
 echo
 ./run_test $(\
-    ls $EXAMPLE_DIR/parser --sort size -r | grep cl$ \
+    ls $file_dir --sort size -r | grep cl$ \
     | head -n ${1:-$file_cnt} \
-    | sed 's@^@'"$EXAMPLE_DIR/parser"'/@'\
+    | sed 's@^@'"$file_dir"'/@'\
 )
