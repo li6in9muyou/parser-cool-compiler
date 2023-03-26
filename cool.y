@@ -218,6 +218,10 @@
               stringtable.add_string(curr_filename)
             );
       }
+    | CLASS error '{' feature_list '}' ';'
+      {
+        yyerrok;
+      }
     ;
     
     /* Feature list may be empty, but no empty features in list. */
