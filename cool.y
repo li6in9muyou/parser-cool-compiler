@@ -230,6 +230,10 @@
       {  
         $$ = single_Features($1);
       }
+    | error ';'
+      {
+        yyerrok;
+      }
     ;
 
     feature
