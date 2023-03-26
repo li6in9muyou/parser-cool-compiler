@@ -236,26 +236,26 @@
     ;
 
     formals
-    : OBJECTID ':' TYPEID
+    : '(' OBJECTID ':' TYPEID ')'
       {
         SET_NODELOC(@1);
-        $$ = single_Formals(formal($1, $3));
+        $$ = single_Formals(formal($2, $4));
       }
-    | formals ',' OBJECTID ':' TYPEID
+    | '(' formals ',' OBJECTID ':' TYPEID ')'
       {
-        SET_NODELOC(@3);
-        $$ = append_Formals($1, single_Formals(formal($3, $5)));
+        SET_NODELOC(@4);
+        $$ = append_Formals($2, single_Formals(formal($4, $6)));
       }
-    | /* empty */
+    | '(' ')'
       {
         $$ = nil_Formals();
       }
     ;
 
     method
-    : OBJECTID '(' formals ')' ':' TYPEID '{' expr '}'
+    : OBJECTID formals ':' TYPEID '{' expr '}'
       {
-        $$ = method($1, $3, $6, $8);
+        $$ = method($1, $2, $4, $6);
       }
     ;
     
