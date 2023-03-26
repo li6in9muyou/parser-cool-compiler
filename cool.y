@@ -257,7 +257,7 @@
       }
     | formal_list ',' OBJECTID ':' TYPEID
       {
-        SET_NODELOC(@4);
+        SET_NODELOC(@3);
         $$ = append_Formals($1, single_Formals(formal($3, $5)));
       }
     ;
