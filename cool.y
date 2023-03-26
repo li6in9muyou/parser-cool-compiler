@@ -191,15 +191,15 @@
     
     class_list
     : class			/* single class */
-        { 
-          $$ = single_Classes($1);
-          parse_results = $$; 
-        }
+      { 
+        $$ = single_Classes($1);
+        parse_results = $$; 
+      }
     | class_list class	/* several classes */
-        { 
-          $$ = append_Classes($1, single_Classes($2)); 
-          parse_results = $$; 
-        }
+      { 
+        $$ = append_Classes($1, single_Classes($2)); 
+        parse_results = $$; 
+      }
     ;
     
     /* If no parent is specified, the class inherits from the Object class. */
@@ -402,6 +402,10 @@
     | OBJECTID ':' TYPEID ASSIGN expr ',' let_list
       {
         $$ = let($1, $3, $5, $7);
+      }
+    | error ',' let_list
+      {
+        yyerrok;
       }
     ;
 
