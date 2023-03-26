@@ -234,6 +234,10 @@
       {
         yyerrok;
       }
+    | /* empty */
+      {
+        $$ = nil_Features();
+      }
     ;
 
     feature
