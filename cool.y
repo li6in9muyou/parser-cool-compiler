@@ -450,6 +450,10 @@
       {
         $$ = nil_Expressions();
       }
+    | error ';'
+      {
+        yyerrok;
+      }
     ;
 
     comma_sep_expr
