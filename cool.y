@@ -446,10 +446,6 @@
       {
         $$ = append_Expressions($1, single_Expressions($2));
       }
-    | ';'
-      {
-        $$ = nil_Expressions();
-      }
     | error ';'
       {
         yyerrok;
