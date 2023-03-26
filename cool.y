@@ -355,6 +355,10 @@
       {
         $$ = typcase($2, $4); 
       }
+    | CASE error OF branches ESAC
+      {
+        yyerrok;
+      }
     ;
 
     branches
@@ -367,6 +371,10 @@
       {
         SET_NODELOC(@1);
         $$ = single_Cases(branch($1, $3, $5));
+      }
+    | branches error ';'
+      {
+        yyerrok;
       }
     ;
 
