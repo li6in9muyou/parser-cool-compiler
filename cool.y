@@ -159,12 +159,13 @@
     %type <expression> expr
     %type <expression> arithmetic
     %type <expression> dispatch
+    %type <expressions> params
+    %type <expressions> param_list
     %type <expression> logics
     %type <expression> let_expr
     %type <expression> case_expr
     %type <cases> branches
     %type <expression> let_list
-    %type <expressions> comma_sep_expr
     %type <expressions> semi_sep_expr
     %type <formals> formals
     %type <formals> formal_list
@@ -464,33 +465,45 @@
       }
     ;
 
-    comma_sep_expr
-    : expr 
+    param_list
+    : expr
       {
         $$ = single_Expressions($1);
       }
-    | comma_sep_expr ',' expr
+    | param_list ',' expr
       {
+        SET_NODELOC(@3);
         $$ = append_Expressions($1, single_Expressions($3));
       }
-    | /* empty */
+    ;
+
+    params
+    : '(' param_list ')'
+      {
+        $$ = $2;
+      }
+    | '(' ')'
       {
         $$ = nil_Expressions();
+      }
+    | '(' error ')'
+      {
+        yyerrok;
       }
     ;
 
     dispatch
-    : OBJECTID '(' comma_sep_expr ')'
+    : OBJECTID params
       {
-        $$ = dispatch(object(idtable.add_string("self")), $1, $3);
+        $$ = dispatch(object(idtable.add_string("self")), $1, $2);
       }
-    | expr '@' TYPEID '.' OBJECTID '(' comma_sep_expr ')'
+    | expr '@' TYPEID '.' OBJECTID params
       {
-        $$ = static_dispatch($1, $3, $5, $7);
+        $$ = static_dispatch($1, $3, $5, $6);
       }
-    | expr '.' OBJECTID '(' comma_sep_expr ')'
+    | expr '.' OBJECTID params
       {
-        $$ = dispatch($1, $3, $5);
+        $$ = dispatch($1, $3, $4);
       }
     ;
     
