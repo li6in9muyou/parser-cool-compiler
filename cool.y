@@ -167,6 +167,7 @@
     %type <expressions> comma_sep_expr
     %type <expressions> semi_sep_expr
     %type <formals> formals
+    %type <formals> formal_list
         
     /* Precedence declarations go here. */
     %right ASSIGN    
@@ -235,20 +236,31 @@
     | attr
     ;
 
-    formals
-    : '(' OBJECTID ':' TYPEID ')'
+    formal_list
+    : OBJECTID ':' TYPEID
       {
         SET_NODELOC(@1);
-        $$ = single_Formals(formal($2, $4));
+        $$ = single_Formals(formal($1, $3));
       }
-    | '(' formals ',' OBJECTID ':' TYPEID ')'
+    | formal_list ',' OBJECTID ':' TYPEID
       {
         SET_NODELOC(@4);
-        $$ = append_Formals($2, single_Formals(formal($4, $6)));
+        $$ = append_Formals($1, single_Formals(formal($3, $5)));
+      }
+    ;
+
+    formals
+    : '(' formal_list ')'
+      {
+        $$ = $2;
       }
     | '(' ')'
       {
         $$ = nil_Formals();
+      }
+    | '(' error ')'
+      {
+        yyerrok;
       }
     ;
 
